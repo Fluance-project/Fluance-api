@@ -4,8 +4,10 @@ import jwt
 import datetime
 import services.verification as vf
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r'/*': {'origins': '*'}})
 app.config['SECRET_KEY'] = 'Fluance'
 
 def check_for_token(func):
@@ -27,7 +29,7 @@ def index():
     return ''
     # return 'hi, for now we use /login and /register only'
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.headers['Content-Type'] == 'application/json':
         rq = json.loads(request.data)
@@ -65,4 +67,4 @@ def authorised():
     return 'page protected'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
