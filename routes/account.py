@@ -5,7 +5,7 @@ import json
 import datetime
 from routes import app
 
-@app.route('/api/v1/login', methods=['GET'])
+@app.route('/api/v1/login', methods=['GET', 'POST'])
 def login():
     print(request.headers)
     if request.headers['Content-Type'] == 'application/json':
