@@ -9,6 +9,8 @@ verify_ssl = true
 flask = "*"
 flask-jwt = "*"
 requests = "*"
+pymongo = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"
