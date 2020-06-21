@@ -4,7 +4,10 @@ import os
 import binascii
 import uuid
 
-
+DATABASE_USER = os.environ.get("DATABASE_USER", "root")
+DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
+DATABASE_HOST = os.environ.get("DATABASE_HOST", "0.0.0.0:27017")
+DATABASE_URI = f'mongodb://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/'
 
 def hash_password(password):
     """
@@ -24,7 +27,7 @@ def verify_password(account):
     :param account: json
     :return: boolean (true if the password is valid)
     """
-    client = MongoClient('mongodb://root:root@localhost:27017/')
+    client = MongoClient(f'{DATABASE_URI}')
     db = client.fluance
 
     if isNotNewEmail(account['email'], db):
@@ -48,7 +51,7 @@ def account_check(account):
     if KeysVerif(account):
         return 406
 
-    client = MongoClient('mongodb://root:root@localhost:27017/')
+    client = MongoClient(f'{DATABASE_URI}')
     db = client.fluance
 
     if isNotNewEmail(account['email'], db):
