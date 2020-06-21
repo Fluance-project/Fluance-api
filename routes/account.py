@@ -8,7 +8,7 @@ from routes import app
 @app.route('/api/v1/login', methods=['GET', 'POST'])
 def login():
     print(request.headers)
-    if request.headers['Content-Type'] == 'application/json':
+    if request.headers['Content-Type'] == 'application/json;charset=UTF-8':
             rq = json.loads(request.data)
             if set(rq.keys()) == {'email', 'password'}:
                 if vf.verify_password(rq):
@@ -27,7 +27,7 @@ def login():
 
 @app.route('/api/v1/register', methods=['POST'])
 def register():
-    if request.headers['Content-Type'] == 'application/json':
+    if request.headers['Content-Type'] == 'application/json;charset=UTF-8':
             status = vf.account_check(json.loads(request.data))
             if status== 406:
                 return jsonify({'message': 'Good form required'}), 406
