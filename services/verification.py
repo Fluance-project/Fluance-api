@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 import hashlib
 import os
@@ -8,6 +9,45 @@ DATABASE_USER = os.environ.get("DATABASE_USER", "root")
 DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
 DATABASE_HOST = os.environ.get("DATABASE_HOST", "127.0.1.0:27017")
 DATABASE_URI = f'mongodb://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/'
+
+
+def account_check(account):
+    """
+    check if the json recived is in the good format
+    :param account:
+    :return:
+    """
+    if KeysVerif(account):
+        return 406
+
+    if isNotNewEmail(account['email'], db):
+        return 409
+
+    # hash password
+    account['password'] = hash_password(account['password'])
+    db.accounts.insert_one(account).inserted_id
+    return 200
+
+def addUser(account_id, user):
+
+    id_ = ObjectId(account_id)
+
+    client = MongoClient(f'{DATABASE_URI}')
+    db = client.fluance
+
+    if db.accounts.find_one({"_id": id_}) is None:
+        return 409
+
+    for item in user:
+        item.update({'user_id': ObjectId(os.urandom(12))})
+        update_tags(id_, item)
+
+
+def update_tags(ref, new_tag):
+    client = MongoClient(f'{DATABASE_URI}')
+    db = client.fluance
+
+    db.accounts.update_one({'_id': ref}, {'$push': {'user': new_tag}}, upsert = True)
 
 def hash_password(password):
     """
@@ -42,26 +82,6 @@ def verify_password(account):
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
 
-def account_check(account):
-    """
-    check if the json recived is in the good format
-    :param account:
-    :return:
-    """
-    if KeysVerif(account):
-        return 406
-
-    client = MongoClient(f'{DATABASE_URI}')
-    db = client.fluance
-
-    if isNotNewEmail(account['email'], db):
-        return 409
-
-    # hash password
-    account['password'] = hash_password(account['password'])
-    db.accounts.insert_one(account).inserted_id
-    return 200
-
 def KeysVerif(list_):
     """
     Check if all keys are correct
@@ -71,7 +91,6 @@ def KeysVerif(list_):
     if {x for x in list_.keys()} == {'companyName', 'email', 'password'}:
         return False
     return True
-
 
 def isNotNewEmail(name, db):
     if db.accounts.find_one({"email": name}) is not None:
