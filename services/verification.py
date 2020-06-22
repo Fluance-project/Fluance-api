@@ -6,7 +6,7 @@ import uuid
 
 DATABASE_USER = os.environ.get("DATABASE_USER", "root")
 DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
-DATABASE_HOST = os.environ.get("DATABASE_HOST", "0.0.0.0:27017")
+DATABASE_HOST = os.environ.get("DATABASE_HOST", "127.0.1.0:27017")
 DATABASE_URI = f'mongodb://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/'
 
 def hash_password(password):
@@ -61,18 +61,6 @@ def account_check(account):
     account['password'] = hash_password(account['password'])
     db.accounts.insert_one(account).inserted_id
     return 200
-
-
-# def KeysVerif(list_):
-#     """
-#     Check if all keys are correct
-#     :param list_:
-#     :return:
-#     """
-#     if {x for x in list_.keys()} == {'companyName', 'email', 'user', 'password'} and\
-#             len(list_['user']) > 0 and {x for x in list_['user'][0].keys()} == {'first name', 'last name', 'role', 'title'}:
-#         return False
-#     return True
 
 def KeysVerif(list_):
     """
