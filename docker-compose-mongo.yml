@@ -1,0 +1,28 @@
+version: '3.4'
+services:
+  mongodb-preface:
+    image: mongo
+    container_name: mongodb-fluance
+    ports:
+    - 27017:27017
+    environment:
+    - MONGO_INITDB_DATABASE=fluance
+    - MONGO_INITDB_ROOT_USERNAME=root
+    - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+    # seeding scripts
+    - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+    # named volumes
+    - mongodb:/data/db
+    - mongoconfig:/data/configdb
+    networks:
+    - mongo_net
+
+volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  mongodb:
+  mongoconfig:
+
+networks:
+  mongo_net:
+    driver: bridge
