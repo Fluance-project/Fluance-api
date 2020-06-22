@@ -131,3 +131,5 @@ dmypy.json
 # ignore pycharm
 .idea
 
+# ignore mongo endpoint
+mongo-entrypoint
