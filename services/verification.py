@@ -5,6 +5,14 @@ import os
 import binascii
 import uuid
 
+"""
+Machine:
+	- uuid
+	- name
+	- status
+	- Account id
+"""
+
 def account_check(account):
     """
     check if the json recived is in the good format
