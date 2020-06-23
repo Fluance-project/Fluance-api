@@ -5,6 +5,17 @@ import json
 from bson import json_util, ObjectId
 import services.machine as sm
 
+@app.route('/api/v1/machine/by-account/<account_id>', methods=['GET'])
+@check_for_token
+def getMachineForAccount(account_id):
+    if request.headers['Content-Type'] == 'application/json':
+        req = sm.get_machine_by_account(account_id)
+        if req== 409:
+            return jsonify({'message': 'machine id not found'}), 409
+        else:
+            return json_util.dumps(req), 200
+    else:
+        return jsonify({'error': 'Please use application/json as content type'}), 422
 
 @app.route('/api/v1/machine/<machine_id>', methods=['GET'])
 @check_for_token
