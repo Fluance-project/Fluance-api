@@ -40,12 +40,19 @@ def register():
 
 @app.route('/api/v1/<account_id>/user', methods=['POST'])
 def addUser(account_id):
-    print(json.loads(request.data))
     if request.headers['Content-Type'] == 'application/json':
-            status = vf.addUser(account_id, json.loads(request.data))
+            status = vf.add_user(account_id, json.loads(request.data))
             if status== 409:
-                return jsonify({'message': 'account id given not found'}), 406
+                return jsonify({'message': 'account id not found'}), 406
 
             return jsonify({'message': 'user added to the account'}), 200
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
+
+@app.route('/api/v1/<account_id>/user/<user_id>', methods=['DELETE'])
+def deleteUser(account_id, user_id):
+        status = vf.remove_user(account_id, user_id)
+        if status== 409:
+            return jsonify({'message': 'account id not found'}), 406
+
+        return jsonify({'message': 'user has been deleted'}), 200

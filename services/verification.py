@@ -7,9 +7,8 @@ import uuid
 
 DATABASE_USER = os.environ.get("DATABASE_USER", "root")
 DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
-DATABASE_HOST = os.environ.get("DATABASE_HOST", "127.0.1.0:27017")
+DATABASE_HOST = os.environ.get("DATABASE_HOST", "127.0.0.1:27017")
 DATABASE_URI = f'mongodb://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/'
-
 
 def account_check(account):
     """
@@ -20,6 +19,9 @@ def account_check(account):
     if KeysVerif(account):
         return 406
 
+    client = MongoClient(f'{DATABASE_URI}')
+    db = client.fluance
+
     if isNotNewEmail(account['email'], db):
         return 409
 
@@ -28,7 +30,8 @@ def account_check(account):
     db.accounts.insert_one(account).inserted_id
     return 200
 
-def addUser(account_id, user):
+
+def add_user(account_id, user):
 
     id_ = ObjectId(account_id)
 
@@ -40,14 +43,36 @@ def addUser(account_id, user):
 
     for item in user:
         item.update({'user_id': ObjectId(os.urandom(12))})
-        update_tags(id_, item)
+        update_tags(id_, item, db)
 
 
-def update_tags(ref, new_tag):
+def remove_user(account_id, user_id):
+
+    account_id = ObjectId(account_id)
+
     client = MongoClient(f'{DATABASE_URI}')
     db = client.fluance
 
-    db.accounts.update_one({'_id': ref}, {'$push': {'user': new_tag}}, upsert = True)
+    if db.accounts.find_one({"_id": account_id}) is None:
+        return 409
+    user_id = ObjectId(user_id)
+    delete_user(account_id, user_id, db)
+
+
+
+def update_tags(ref, new_tag, db):
+    db.accounts.update_one(
+        {'_id': ref},
+        {'$push': {'user': new_tag}},
+        upsert = True)
+
+
+def delete_user(account_id, user_id, db):
+    db.accounts.update_one(
+      {'_id': account_id},
+      {'$pull': {'user':{ 'user_id': user_id}}}
+    )
+
 
 def hash_password(password):
     """
@@ -60,6 +85,7 @@ def hash_password(password):
                                 salt, 100000)
     pwdhash = binascii.hexlify(pwdhash)
     return (salt + pwdhash).decode('ascii')
+
 
 def verify_password(account):
     """
@@ -82,6 +108,7 @@ def verify_password(account):
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
 
+
 def KeysVerif(list_):
     """
     Check if all keys are correct
@@ -92,7 +119,9 @@ def KeysVerif(list_):
         return False
     return True
 
+
 def isNotNewEmail(name, db):
     if db.accounts.find_one({"email": name}) is not None:
         return True
     return False
+
