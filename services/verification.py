@@ -63,7 +63,7 @@ def remove_user(account_id, user_id):
 def update_tags(ref, new_tag, db):
     db.accounts.update_one(
         {'_id': ref},
-        {'$push': {'user': new_tag}},
+        {'$addToSet': {'user': new_tag}},
         upsert = True)
 
 

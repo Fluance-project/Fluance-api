@@ -25,6 +25,7 @@ def login():
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
+
 @app.route('/api/v1/register', methods=['POST'])
 def register():
     if request.headers['Content-Type'] == 'application/json':
@@ -38,6 +39,7 @@ def register():
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
+
 @app.route('/api/v1/<account_id>/user', methods=['POST'])
 def addUser(account_id):
     if request.headers['Content-Type'] == 'application/json':
@@ -45,9 +47,10 @@ def addUser(account_id):
             if status== 409:
                 return jsonify({'message': 'account id not found'}), 406
 
-            return jsonify({'message': 'user added to the account'}), 200
+            return jsonify({'message': 'user ahs been added'}), 200
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
+
 
 @app.route('/api/v1/<account_id>/user/<user_id>', methods=['DELETE'])
 def deleteUser(account_id, user_id):
@@ -56,3 +59,4 @@ def deleteUser(account_id, user_id):
             return jsonify({'message': 'account id not found'}), 406
 
         return jsonify({'message': 'user has been deleted'}), 200
+
