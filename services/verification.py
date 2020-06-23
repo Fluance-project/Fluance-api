@@ -1,6 +1,7 @@
 from bson.objectid import ObjectId
 from services import db
 import hashlib
+import os
 import binascii
 import uuid
 
