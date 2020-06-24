@@ -40,7 +40,7 @@ def register():
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
 
-@app.route('/api/v1/<account_id>/user', methods=['POST'])
+@app.route('/api/v1/account/<account_id>/user', methods=['POST'])
 def addUser(account_id):
     if request.headers['Content-Type'] == 'application/json':
             status = vf.add_user(account_id, json.loads(request.data))
@@ -52,7 +52,7 @@ def addUser(account_id):
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
 
-@app.route('/api/v1/<account_id>/user/<user_id>', methods=['DELETE'])
+@app.route('/api/v1/account/<account_id>/user/<user_id>', methods=['DELETE'])
 def deleteUser(account_id, user_id):
         status = vf.remove_user(account_id, user_id)
         if status== 409:
