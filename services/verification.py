@@ -35,7 +35,7 @@ def account_check(account):
 def add_user(account_id, user):
 
     id_ = ObjectId(account_id)
-
+    user["_id"] = ObjectId(os.urandom(12))
     if db.accounts.find_one({"_id": id_}) is None:
         return 409
     db.accounts.update({ "_id" : id_},{ "$push": { "User" : user } })
@@ -44,13 +44,12 @@ def add_user(account_id, user):
 
 def remove_user(account_id, user_id):
 
-    account_id = ObjectId(account_id)
-
-    if db.accounts.find_one({"_id": account_id}) is None:
+    id_ = ObjectId(account_id)
+    id_user_ = ObjectId(user_id)
+    if db.accounts.find_one({"_id": id_}) is None:
         return 409
-    user_id = ObjectId(user_id)
-    delete_user(account_id, user_id, db)
-
+    db.accounts.update({ "_id" : id_},{ "$pull": { "User" : { "$elemMatch": { "_id": id_user_ } } } })
+    return 200
 
 
 def update_tags(ref, new_tag, db):

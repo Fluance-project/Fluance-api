@@ -61,7 +61,7 @@ def addUser(account_id):
             if status== 409:
                 return jsonify({'message': 'account id not found'}), 406
 
-            return jsonify({'message': 'user ahs been added'}), 200
+            return jsonify({'message': 'user has been added'}), 200
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
