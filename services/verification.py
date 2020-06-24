@@ -1,14 +1,17 @@
 from bson.objectid import ObjectId
-from pymongo import MongoClient
+from services import db
 import hashlib
 import os
 import binascii
 import uuid
 
-DATABASE_USER = os.environ.get("DATABASE_USER", "root")
-DATABASE_PASSWORD = os.environ.get("DATABASE_PASSWORD", "root")
-DATABASE_HOST = os.environ.get("DATABASE_HOST", "127.0.0.1:27017")
-DATABASE_URI = f'mongodb://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}/'
+"""
+Machine:
+	- uuid
+	- name
+	- status
+	- Account id
+"""
 
 def account_check(account):
     """
@@ -18,9 +21,6 @@ def account_check(account):
     """
     if KeysVerif(account):
         return 406
-
-    client = MongoClient(f'{DATABASE_URI}')
-    db = client.fluance
 
     if isNotNewEmail(account['email'], db):
         return 409
@@ -35,9 +35,6 @@ def add_user(account_id, user):
 
     id_ = ObjectId(account_id)
 
-    client = MongoClient(f'{DATABASE_URI}')
-    db = client.fluance
-
     if db.accounts.find_one({"_id": id_}) is None:
         return 409
 
@@ -49,9 +46,6 @@ def add_user(account_id, user):
 def remove_user(account_id, user_id):
 
     account_id = ObjectId(account_id)
-
-    client = MongoClient(f'{DATABASE_URI}')
-    db = client.fluance
 
     if db.accounts.find_one({"_id": account_id}) is None:
         return 409
@@ -93,8 +87,6 @@ def verify_password(account):
     :param account: json
     :return: boolean (true if the password is valid)
     """
-    client = MongoClient(f'{DATABASE_URI}')
-    db = client.fluance
 
     if isNotNewEmail(account['email'], db):
         provided_password = account['password']

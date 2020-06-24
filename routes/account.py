@@ -4,10 +4,11 @@ import jwt
 import json
 import datetime
 from routes import app
+from config import SECRET
 
 @app.route('/api/v1/login', methods=['GET', 'POST'])
 def login():
-    print(request.headers)
+    print(SECRET)
     if request.headers['Content-Type'] == 'application/json':
             rq = json.loads(request.data)
             if set(rq.keys()) == {'email', 'password'}:
@@ -17,7 +18,7 @@ def login():
                         'user': rq['email'],
                         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
                     },
-                    app.config['SECRET_KEY'])
+                    SECRET)
                     return jsonify({'token': token.decode('utf-8')})
                 else:
                     return make_response('User or password wrong', 403, {'WWW-Authenticate': 'Basic realm="Login required"'})
