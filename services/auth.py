@@ -12,7 +12,6 @@ def check_for_token(func):
         if not token:
             return jsonify({'message': 'Missing token'}), 403
         try:
-            print(SECRET)
             data = jwt.decode(token, SECRET)
         except:
             return jsonify({'message' : 'Invalid token'}), 403
