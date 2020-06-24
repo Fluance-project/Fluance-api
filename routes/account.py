@@ -8,15 +8,14 @@ from config import SECRET
 
 @app.route('/api/v1/login', methods=['GET', 'POST'])
 def login():
-    print(SECRET)
     if request.headers['Content-Type'] == 'application/json':
             rq = json.loads(request.data)
             if set(rq.keys()) == {'email', 'password'}:
                 if vf.verify_password(rq):
-                    session['logged_in'] = True
+                    # session['logged_in'] = True
                     token = jwt.encode({
                         'user': rq['email'],
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=6)
                     },
                     SECRET)
                     return jsonify({'token': token.decode('utf-8')})
@@ -48,7 +47,7 @@ def addUser(account_id):
             if status== 409:
                 return jsonify({'message': 'account id not found'}), 406
 
-            return jsonify({'message': 'user ahs been added'}), 200
+            return jsonify({'message': 'user has been added'}), 200
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
