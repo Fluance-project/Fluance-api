@@ -1,5 +1,6 @@
 from bson.objectid import ObjectId
 from services import db
+from flask import Flask, jsonify, request, session, render_template, make_response
 import hashlib
 import os
 import binascii
@@ -59,6 +60,12 @@ def update_tags(ref, new_tag, db):
         {'_id': ref},
         {'$addToSet': {'user': new_tag}},
         upsert = True)
+
+def get_accounts():
+    res = []
+    for x in db.accounts.find():
+        res.append(x)
+    return res
 
 
 def delete_user(account_id, user_id, db):

@@ -5,6 +5,8 @@ import json
 import datetime
 from routes import app
 from config import SECRET
+from bson import json_util
+from services.auth import check_for_token
 
 @app.route('/api/v1/login', methods=['GET', 'POST'])
 def login():
@@ -40,8 +42,20 @@ def register():
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
+@app.route('/api/v1/account', methods=['GET'])
+@check_for_token
+def getAccount():
+    if request.headers['Content-Type'] == 'application/json':
+        req = vf.get_accounts()
+        if req== 409:
+            return jsonify({'message': 'Email already exist'}), 409 
+        else:
+            return json_util.dumps(req), 200
+    else:
+        return jsonify({'error': 'Please use application/json as content type'}), 422
 
 @app.route('/api/v1/<account_id>/user', methods=['POST'])
+@check_for_token
 def addUser(account_id):
     if request.headers['Content-Type'] == 'application/json':
             status = vf.add_user(account_id, json.loads(request.data))
@@ -54,6 +68,7 @@ def addUser(account_id):
 
 
 @app.route('/api/v1/<account_id>/user/<user_id>', methods=['DELETE'])
+@check_for_token
 def deleteUser(account_id, user_id):
         status = vf.remove_user(account_id, user_id)
         if status== 409:
