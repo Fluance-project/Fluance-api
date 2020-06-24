@@ -10,7 +10,6 @@ from services.auth import check_for_token
 
 @app.route('/api/v1/login', methods=['GET', 'POST'])
 def login():
-    print(SECRET)
     if request.headers['Content-Type'] == 'application/json':
             rq = json.loads(request.data)
             if set(rq.keys()) == {'email', 'password'}:
@@ -42,19 +41,19 @@ def register():
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
-@app.route('/api/v1/account', methods=['GET'])
+@app.route('/api/v1/account/', methods=['GET'])
 @check_for_token
 def getAccount():
     if request.headers['Content-Type'] == 'application/json':
         req = vf.get_accounts()
         if req== 409:
-            return jsonify({'message': 'Email already exist'}), 409 
+            return jsonify({'message': 'Account not exist'}), 409 
         else:
             return json_util.dumps(req), 200
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
-@app.route('/api/v1/<account_id>/user', methods=['POST'])
+@app.route('/api/v1/account/<account_id>/user', methods=['POST'])
 @check_for_token
 def addUser(account_id):
     if request.headers['Content-Type'] == 'application/json':
@@ -66,8 +65,19 @@ def addUser(account_id):
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
+@app.route('/api/v1/account/<account_id>/users', methods=['GET'])
+@check_for_token
+def getUserOfAccount(account_id):
+    if request.headers['Content-Type'] == 'application/json':
+        req = vf.get_user_for_accounts(account_id)
+        if req== 409:
+            return jsonify({'message': 'Account dont exist'}), 409 
+        else:
+            return json_util.dumps(req), 200
+    else:
+        return jsonify({'error': 'Please use application/json as content type'}), 422
 
-@app.route('/api/v1/<account_id>/user/<user_id>', methods=['DELETE'])
+@app.route('/api/v1/account/<account_id>/user/<user_id>', methods=['DELETE'])
 @check_for_token
 def deleteUser(account_id, user_id):
         status = vf.remove_user(account_id, user_id)

@@ -15,7 +15,7 @@ def get_machine(machine_id):
         return req
 
 def get_machine_by_account(account_id):
-    req = db.machine.find({ "account_id": { '$eq': int(account_id)} })
+    req = db.machine.find({ "account_id": { '$eq': ObjectId(account_id)} })
     if req is None:
         return 409
     else: 

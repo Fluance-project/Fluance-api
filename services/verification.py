@@ -38,10 +38,8 @@ def add_user(account_id, user):
 
     if db.accounts.find_one({"_id": id_}) is None:
         return 409
-
-    for item in user:
-        item.update({'user_id': ObjectId(os.urandom(12))})
-        update_tags(id_, item, db)
+    db.accounts.update({ "_id" : id_},{ "$push": { "User" : user } })
+    return 201
 
 
 def remove_user(account_id, user_id):
@@ -67,6 +65,12 @@ def get_accounts():
         res.append(x)
     return res
 
+def get_user_for_accounts(account_id):
+    req = db.accounts.find({ "_id": { '$eq': ObjectId(account_id)} })
+    if req is None:
+        return 409
+    else: 
+        return req[0]['User']
 
 def delete_user(account_id, user_id, db):
     db.accounts.update_one(
