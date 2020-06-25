@@ -32,16 +32,26 @@ def account_check(account):
 
 
 def add_user(account_id, user):
-
     id_ = ObjectId(account_id)
-
     if db.accounts.find_one({"_id": id_}) is None:
         return 409
-
     for item in user:
         item.update({'user_id': ObjectId(os.urandom(12))})
         update_tags(id_, item, db)
 
+def get_all_account():
+    req = [x for x in db.accounts.find()]
+    if req is None:
+        return 404
+    else:
+        return req
+
+def get_account(account_id):
+    req = db.accounts.find_one({ "_id": ObjectId(account_id) })
+    if req is None:
+        return 409
+    else:
+        return req
 
 def remove_user(account_id, user_id):
 
