@@ -53,6 +53,27 @@ def get_account(account_id):
     else:
         return req
 
+def get_user(user_id):
+    rq = db.accounts.find_one(
+        {'user.user_id': ObjectId(user_id)},
+        {'user.$': 1}
+    )
+    if rq is None:
+        return 409
+    return rq
+
+def update_user(user_id, update):
+    query = {}
+    if get_user(user_id) == 409:
+        return 409
+
+    user_id = ObjectId(user_id)
+    for key,val in update.items():
+        query.update({"user.$."+key:val})
+    myquery =  {'user': { '$elemMatch': { 'user_id': user_id} }, 'user.user_id':user_id}
+    newvalues = {"$set":query}
+    db.accounts.update_one(myquery, newvalues)
+
 def remove_user(account_id, user_id):
 
     account_id = ObjectId(account_id)
