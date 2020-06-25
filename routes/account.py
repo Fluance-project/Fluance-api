@@ -7,6 +7,7 @@ from routes import app
 from config import SECRET
 from services.auth import check_for_token
 from bson import json_util, ObjectId
+from services import db
 
 @app.route('/api/v1/login', methods=['GET', 'POST'])
 def login():
@@ -17,7 +18,8 @@ def login():
                     # session['logged_in'] = True
                     token = jwt.encode({
                         'user': rq['email'],
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=6)
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=6),
+                        'account_id': str(db.accounts.find_one({"email": rq['email']})['_id']),
                     },
                     SECRET)
                     return jsonify({'token': token.decode('utf-8')})
