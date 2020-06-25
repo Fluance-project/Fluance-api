@@ -8,9 +8,11 @@ from config import SECRET
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        token = request.headers['Authorization'].replace('Bearer ', '')
-        if not token:
+        try:
+            token = request.headers['Authorization'].replace('Bearer ', '')
+        except KeyError:
             return jsonify({'message': 'Missing token'}), 403
+
         try:
             data = jwt.decode(token, SECRET)
         except:
