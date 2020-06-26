@@ -81,7 +81,7 @@ def remove_user(account_id, user_id):
     if db.accounts.find_one({"_id": account_id}) is None:
         return 409
     user_id = ObjectId(user_id)
-    delete_user(account_id, user_id, db)
+    delete_user_query(account_id, user_id, db)
 
 
 
@@ -92,7 +92,7 @@ def update_tags(ref, new_tag, db):
         upsert = True)
 
 
-def delete_user(account_id, user_id, db):
+def delete_user_query(account_id, user_id, db):
     db.accounts.update_one(
       {'_id': account_id},
       {'$pull': {'user':{ 'user_id': user_id}}}
