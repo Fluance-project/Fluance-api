@@ -84,19 +84,11 @@ def remove_user(account_id, user_id):
     delete_user(account_id, user_id, db)
 
 
-
 def update_tags(ref, new_tag, db):
     db.accounts.update_one(
         {'_id': ref},
         {'$addToSet': {'user': new_tag}},
         upsert = True)
-
-
-def delete_user(account_id, user_id, db):
-    db.accounts.update_one(
-      {'_id': account_id},
-      {'$pull': {'user':{ 'user_id': user_id}}}
-    )
 
 
 def hash_password(password):
