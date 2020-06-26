@@ -33,7 +33,7 @@ def edit_machine(machine_id, machine):
     if db.machine.find_one({"_id": ObjectId(machine_id)}) is None:
         return 409
 
-    if 'account_id' is machine:
+    if 'account_id' in machine:
         machine['account_id'] = ObjectId(machine['account_id'])
     db.machine.find_one_and_update(
       {'_id': ObjectId(machine_id)},
