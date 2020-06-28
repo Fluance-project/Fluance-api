@@ -83,28 +83,18 @@ def update_user(user_id, update):
 
 def remove_user(account_id, user_id):
 
-    account_id = ObjectId(account_id)
-
-    if db.accounts.find_one({"_id": account_id}) is None:
-        return 409
-    user_id = ObjectId(user_id)
-    delete_user_query(account_id, user_id, db)
-
-
+    acc_id = ObjectId(account_id)
+    usr_id = ObjectId(user_id)
+    db.accounts.update_one(
+      {'_id': acc_id},
+      {'$pull': {'users':{ 'user_id': usr_id}}}
+    )
 
 def update_tags(ref, new_tag, db):
     db.accounts.update_one(
         {'_id': ref},
         {'$addToSet': {'user': new_tag}},
         upsert = True)
-
-
-def delete_user_query(account_id, user_id, db):
-    db.accounts.update_one(
-      {'_id': account_id},
-      {'$pull': {'user':{ 'user_id': user_id}}}
-    )
-
 
 def hash_password(password):
     """
