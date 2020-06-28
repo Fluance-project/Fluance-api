@@ -77,8 +77,9 @@ def addUser(account_id):
             if status== 409:
                 return jsonify({'message': 'account id not found'}), 406
 
-            return jsonify({'message': 'user has been added'}), 200
+            return jsonify({'message': 'user has been added', 'data' : json_util.dumps(status)}), 200
     else:
+        print('cass toi')
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
 @app.route('/api/v1/account/<account_id>/user/<user_id>', methods=['PUT', 'PATCH'])

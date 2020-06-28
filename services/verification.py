@@ -33,11 +33,18 @@ def account_check(account):
 
 def add_user(account_id, user):
     id_ = ObjectId(account_id)
-    if db.accounts.find_one({"_id": id_}) is None:
-        return 409
-    for item in user:
-        item.update({'user_id': ObjectId(os.urandom(12))})
-        update_tags(id_, item, db)
+    newUser = {
+        'user_id': ObjectId(os.urandom(12)),
+        'fistName' : user['firstName'],
+        'lastName' : user['lastName'],
+        'title' : user['intitule'],
+        'role' : user['role'],
+    }
+    db.accounts.update(
+        { "_id" : id_ },
+        { "$push": { "users": newUser } }
+        )
+    return newUser
 
 def get_all_account():
     req = [x for x in db.accounts.find()]
