@@ -8,6 +8,7 @@ from config import SECRET
 def check_for_token(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
+        print(request.headers)
         try:
             token = request.headers['Authorization'].replace('Bearer ', '')
         except KeyError:

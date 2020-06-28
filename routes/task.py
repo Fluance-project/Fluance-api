@@ -9,28 +9,20 @@ import services.task as st
 @app.route('/api/v1/task/by-account/<account_id>', methods=['GET'])
 @check_for_token
 def getTaskForAccount(account_id):
-    if request.headers['Content-Type'] == 'application/json':
-        req = st.get_task_by_account(account_id)
-        if req== 409:
-            return jsonify({'message': 'task id not found'}), 409
-        else:
-            return json_util.dumps(req), 200
+    req = st.get_task_by_account(account_id)
+    if req== 409:
+        return jsonify({'message': 'task id not found'}), 409
     else:
-        return jsonify({'error': 'Please use application/json as content type'}), 422
-
+        return json_util.dumps(req), 200
 
 @app.route('/api/v1/task/by-machine/<machine_id>', methods=['GET'])
 @check_for_token
 def getTaskForMachine(machine_id):
-    if request.headers['Content-Type'] == 'application/json':
-        req = st.get_task_by_machine(machine_id)
-        if req== 409:
-            return jsonify({'message': 'task id not found'}), 409
-        else:
-            return json_util.dumps(req), 200
+    req = st.get_task_by_machine(machine_id)
+    if req== 409:
+        return jsonify({'message': 'task id not found'}), 409
     else:
-        return jsonify({'error': 'Please use application/json as content type'}), 422
-
+        return json_util.dumps(req), 200
 
 @app.route('/api/v1/task/<task_id>', methods=['GET'])
 @check_for_token
