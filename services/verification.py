@@ -42,7 +42,7 @@ def add_user(account_id, user):
     }
     db.accounts.update(
         { "_id" : id_ },
-        { "$push": { "user": newUser } }
+        { "$push": { "users": newUser } }
         )
     return newUser
 
@@ -87,7 +87,7 @@ def remove_user(account_id, user_id):
     usr_id = ObjectId(user_id)
     db.accounts.update_one(
       {'_id': acc_id},
-      {'$pull': {'users':{ 'user_id': usr_id}}}
+      {'$pull': {'user':{ 'user_id': usr_id}}}
     )
 
 def update_tags(ref, new_tag, db):
