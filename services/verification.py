@@ -42,7 +42,7 @@ def add_user(account_id, user):
     }
     db.accounts.update(
         { "_id" : id_ },
-        { "$push": { "users": newUser } }
+        { "$push": { "user": newUser } }
         )
     return newUser
 
