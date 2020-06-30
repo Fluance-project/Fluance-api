@@ -27,14 +27,14 @@ def getTaskForMachine(machine_id):
 @app.route('/api/v1/task/<task_id>', methods=['GET'])
 @check_for_token
 def getTask(task_id):
-    if request.headers['Content-Type'] == 'application/json':
-        req = st.get_task(task_id)
-        if req== 409:
-            return jsonify({'message': 'task id not found'}), 409
-        else:
-            return json_util.dumps(req), 200
+    # if request.headers['Content-Type'] == 'application/json':
+    req = st.get_task(task_id)
+    if req == 409:
+        return jsonify({'message': 'task id not found'}), 409
     else:
-        return jsonify({'error': 'Please use application/json as content type'}), 422
+        return json_util.dumps(req), 200
+    # else:
+    #     return jsonify({'error': 'Please use application/json as content type'}), 422
 
 
 @app.route('/api/v1/task', methods=['POST'])
