@@ -9,8 +9,8 @@ def add_task(task):
     task['start_date'] = datetime.datetime.strptime(task['start_date'], '%Y-%m-%dT%H:%M:%SZ%z').timestamp()
     if task['end_date'] is not None:
         task['end_date'] = datetime.datetime.strptime(task['end_date'], '%Y-%m-%dT%H:%M:%SZ%z').timestamp()
-    db.task.insert_one(task)
-    return 200
+    id_ = db.task.insert_one(task)
+    return {'id':id_.inserted_id}
 
 
 def get_task(task_id):

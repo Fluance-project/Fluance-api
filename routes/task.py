@@ -41,8 +41,8 @@ def getTask(task_id):
 @check_for_token
 def addTask():
     if request.headers['Content-Type'] == 'application/json':
-        st.add_task(json.loads(request.data))
-        return jsonify({'message': 'task has been added'}), 200
+        req = st.add_task(json.loads(request.data))
+        return json_util.dumps(req), 200
     else:
         return jsonify({'error': 'Please use application/json as content type'}), 422
 
