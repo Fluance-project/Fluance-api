@@ -1,5 +1,6 @@
-from pymongo import MongoClient
+from flask_pymongo import PyMongo
 from config import DATABASE_URI
+from routes import app
 
-client = MongoClient(f'{DATABASE_URI}')
-db = client.fluance
+mongo = PyMongo(app)
+db = mongo.db
